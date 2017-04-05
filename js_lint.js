@@ -22,7 +22,7 @@ function hasTypeOfOperator(node) {
 }
 
 /**
-    @find getRowCount is used on 
+    @find getRowCount is used on
 
 **/
 
@@ -105,6 +105,15 @@ module.exports = {
                     node: node,
                     context: context
                 });
+            },
+
+            /* Check if VariableDeclaration is done on global scope */
+            Program(node) {
+              node.body.forEach(function(element) {
+                if(element.type === "VariableDeclaration") {
+              		context.report(element, "Do not declare variables in global scope");
+                }
+              })
             },
 
 
