@@ -107,8 +107,13 @@ module.exports = {
                 });
             },
 
-            /* Check if VariableDeclaration is done on global scope */
             Program(node) {
+              // Empty scripts will have body length 0.
+              if(node.body.length === 0) {
+                context.report(node, "Client Scripts should not have an empty script field")
+              }
+
+              /* Check if VariableDeclaration is done on global scope */
               node.body.forEach(function(element) {
                 if(element.type === "VariableDeclaration") {
               		context.report(element, "Do not declare variables in global scope");
@@ -117,7 +122,7 @@ module.exports = {
             },
 
             /*
-              Client-side code should not use GlideRecord
+            Client-side code should not use GlideRecord
             If GlideRecord is used with new keyword, then this will throw the error.
             NOTE: isClientScript is placeholder right now. If this is client script(true)
             then this check should occur.
