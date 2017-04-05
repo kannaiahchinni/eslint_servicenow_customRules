@@ -116,6 +116,19 @@ module.exports = {
               })
             },
 
+            /*
+              Client-side code should not use GlideRecord
+            If GlideRecord is used with new keyword, then this will throw the error.
+            NOTE: isClientScript is placeholder right now. If this is client script(true)
+            then this check should occur.
+            */
+            NewExpression(node) {
+              if(node.callee.name === "GlideRecord" && isClientScript === true) {
+                context.report(node, "Do not use GlideRecord in client script");
+              }
+            },
+            /*  */
+
 
             "BinaryExpression:exit" (node) {
 
