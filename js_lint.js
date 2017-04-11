@@ -1,6 +1,6 @@
 /**
  * @fileoverview Rule to flag references to undeclared variables.
- * @author Mark Macdonald
+ * @author Karunakar Medamoni
  */
 "use strict";
 
@@ -110,7 +110,7 @@ module.exports = {
 
             "BinaryExpression:exit" (node) {
 
-                console.log(node.object.operator);
+                //console.log(node.object.operator);
 
 
 
@@ -119,8 +119,10 @@ module.exports = {
             "CallExpression:exit" (node) {
 
                  
-                if (node.callee && node.callee.name == 'eval') {     
+                if (node.callee && node.callee.name == 'eval') {
+
                     context.report(node, 'Do not use eval() function... Use GlideEvaluator ');         
+
                 }
 
                 if (node.callee.object && node.callee.object.name === "document") {
@@ -128,6 +130,51 @@ module.exports = {
                     context.report(node, "Dont use document object for DOM manipulation");
                 }
 
+                if (node.callee.property != null && node.callee.property.name == "getXMLWait") {
+
+                      
+                    context.report(node.callee, 'Please change getXMLWait to getXML with a callback');
+
+                      
+                }  
+                if (node.callee.property != null && node.callee.property.name === "log") {  
+                    context.report(node.callee.property, 'Please remove log statements');
+
+                      
+                }      
+                if (node.callee && node.callee.name === '$j') {
+
+                        
+                    context.report(node, 'Do not use $j object for DOM manipulation');    
+                }
+
+                if (node.type === 'CallExpression' && node.callee.object.name === 'current' && node.callee.property.name == 'update') {    
+
+                       
+                    context.report(node.callee, 'GlideAjax. Minimize number of server calls by using one server side call. ');  
+                }
+
+
+                if (node.callee.object.name === "gs" && node.callee.property.name === "debug") {   
+                    context.report(node, 'gs.debug statements should not be used');  
+                }
+
+                if (node.callee.object.name === "gs" && node.callee.property.name === "log") {   
+                    context.report(node, 'gs.log statements should not be used');  
+                }
+
+                if (node.callee.object.name === "gs" && node.callee.property.name === "info") {   
+                    context.report(node, 'gs.info statements should not be used');  
+                }
+
+
+
+            },
+
+            "MemberExpression:exit" (node) {      
+                if (node.type === 'MemberExpression' && node.object.type === 'Identifier' && node.object.name === 'g_form' && node.property.type === 'Identifier' && node.property.name == 'setValue') {      
+                    context.report(node, 'setValue by providing both value and displayValue to reduce second server call');    
+                }  
             },
 
 
