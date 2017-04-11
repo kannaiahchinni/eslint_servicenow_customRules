@@ -116,6 +116,18 @@ module.exports = {
 
             },
 
+            // alert statements removal 
+
+            "Identifier:exit" (node) {
+
+                if (node && node.name === "alert") {
+
+                    context.report(node, " Don't use alert statements in code. Use GlideDialogWindow for popups ");
+
+                }
+
+            },
+
 
             // added validation for sys_id hardcodes in code 
             "Literal:exit" (node) {
