@@ -1,5 +1,5 @@
 /**
- * @fileoverview Enforce that first statement of an onChange function must return if isLoading is true
+ * @fileoverview Enforce that first statement of an onChange function must be 'if' and must return if isLoading is true
  * @author Arun Rahul
  */
 "use strict";
@@ -41,7 +41,7 @@ module.exports = {
           }
 
           function isOnlyReturn (node) {
-              return node.body && node.body.length == 1 && node.body[0].type == "ReturnStatement";
+              return (node.body && node.body.length == 1 && node.body[0].type == "ReturnStatement") || node.type == "ReturnStatement";
           }
 
           //----------------------------------------------------------------------
