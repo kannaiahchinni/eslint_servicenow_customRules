@@ -116,6 +116,18 @@ module.exports = {
 
             },
 
+
+            // added validation for sys_id hardcodes in code 
+            "Literal:exit" (node) {
+
+                var regex = /[0-9a-z]{32}/;
+
+                if (node && regex.test(node.value)) {
+                    context.report(node, " don't use sys_id in code");
+                }
+
+            },
+
             "CallExpression:exit" (node) {
 
                  
@@ -123,6 +135,16 @@ module.exports = {
 
                     context.report(node, 'Do not use eval() function... Use GlideEvaluator ');         
 
+                }
+
+                  
+                if (node.callee && node.callee.name == "gel") {   
+                    context.report(node, 'Do not use gel in client side code');   
+                }
+
+                 
+                if (node.callee && node.callee.name == "jQuery") {   
+                    context.report(node, 'Do not use gel in client side code');   
                 }
 
                 if (node.callee.object && node.callee.object.name === "document") {
@@ -138,6 +160,7 @@ module.exports = {
                       
                 }  
                 if (node.callee.property != null && node.callee.property.name === "log") {  
+
                     context.report(node.callee.property, 'Please remove log statements');
 
                       
@@ -148,22 +171,22 @@ module.exports = {
                     context.report(node, 'Do not use $j object for DOM manipulation');    
                 }
 
-                if (node.type === 'CallExpression' && node.callee.object.name === 'current' && node.callee.property.name == 'update') {    
+                if (node.callee.object && node.callee.object.name === 'current' && node.callee.property.name == 'update') {    
 
                        
                     context.report(node.callee, 'GlideAjax. Minimize number of server calls by using one server side call. ');  
                 }
 
 
-                if (node.callee.object.name === "gs" && node.callee.property.name === "debug") {   
+                if (node.callee.object && node.callee.object.name === "gs" && node.callee.property.name === "debug") {   
                     context.report(node, 'gs.debug statements should not be used');  
                 }
 
-                if (node.callee.object.name === "gs" && node.callee.property.name === "log") {   
+                if (node.callee.object && node.callee.object.name === "gs" && node.callee.property.name === "log") {   
                     context.report(node, 'gs.log statements should not be used');  
                 }
 
-                if (node.callee.object.name === "gs" && node.callee.property.name === "info") {   
+                if (node.callee.object && node.callee.object.name === "gs" && node.callee.property.name === "info") {   
                     context.report(node, 'gs.info statements should not be used');  
                 }
 
